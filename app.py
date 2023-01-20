@@ -46,7 +46,7 @@ def inference(model_inputs:dict) -> dict:
     
     with torch.no_grad():
 
-        ps = model(image.to(edvice).unsqueeze(0))
+        ps = model(image.to(device).unsqueeze(0))
         torch_logits = torch.from_numpy(ps.cpu().data.numpy())
         probabilities_scores = F.softmax(torch_logits, dim = -1).numpy()[0]
     
