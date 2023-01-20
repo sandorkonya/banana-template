@@ -42,4 +42,4 @@ def inference(model_inputs:dict) -> dict:
     result = ps.cpu().data.numpy()[0]
     
     # Return the results as a dictionary
-    return json.dumps(result)
+    return json.dumps(result.tolist())
