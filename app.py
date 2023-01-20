@@ -6,6 +6,7 @@ from torchvision import transforms as T,datasets
 import torch.nn.functional as F 
 from io import BytesIO
 import base64
+import json
 
 # Init is ran on server startup
 # Load your model to GPU as a global variable here using the variable name "model"
@@ -41,4 +42,4 @@ def inference(model_inputs:dict) -> dict:
     result = ps.cpu().data.numpy()[0]
     
     # Return the results as a dictionary
-    return result
+    return json.dumps(result)
