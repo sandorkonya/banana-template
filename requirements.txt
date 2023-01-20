@@ -3,4 +3,5 @@ accelerate
 timm
 numpy
 PIL
+torch
 torchvision
