@@ -24,7 +24,7 @@ def init():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("On which device we are on:{}".format(device))
 
-    model = timm.create_model("hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True) 
+    model = timm.create_model("resnet18", pretrained=True) 
     if torch.cuda.is_available():
         model.cuda()
 
@@ -43,9 +43,12 @@ def inference(model_inputs:dict) -> dict:
     # Assuming imagedata is the string value with 'data:image/jpeg;base64,' we remove the first 23 char
     image = Image.open(BytesIO(base64.decodebytes(bytes(imagedata[23:], "utf-8"))))
     image = img_transform(image)
-    ps = model(image.to(device).unsqueeze(0))
-    ps = F.softmax(ps,dim = 1)
-    result = ps.cpu().data.numpy()[0]
+    
+    with torch.no_grad():
+
+        ps = model(image.to(edvice).unsqueeze(0))
+        torch_logits = torch.from_numpy(ps.cpu().data.numpy())
+        probabilities_scores = F.softmax(torch_logits, dim = -1).numpy()[0]
     
     # Return the results as a dictionary
-    return json.dumps(result.tolist())
+    return json.dumps(probabilities_scores.tolist())
