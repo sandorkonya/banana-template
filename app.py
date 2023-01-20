@@ -25,6 +25,8 @@ def init():
     print("On which device we are on:{}".format(device))
 
     model = timm.create_model("hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True) 
+    if torch.cuda.is_available():
+        model.cuda()
 
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
