@@ -1,6 +1,7 @@
 import timm
 import numpy as np
 from PIL import Image
+import torch
 from torchvision import transforms as T,datasets
 import torch.nn.functional as F 
 from io import BytesIO
