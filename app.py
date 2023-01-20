@@ -13,14 +13,15 @@ import json
 def init():
     global model
     global img_transform
+    global device
     
     img_transform = T.Compose([
-                             T.Resize(size=(384,384)), # Resizing the image to be 384 x 384
+                            #T.Resize(size=(384,384)), # Resizing the image to be 384 x 384
                              T.ToTensor(), #converting the dimension from (height,weight,channel) to (channel,height,weight) convention of PyTorch
                              T.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225]) # Normalize by 3 means 3 StD's of the image net, 3 channels
     ])
     
-    device = 0 if torch.cuda.is_available() else -1
+    device = "gpu" if torch.cuda.is_available() else "cpu"
     model = timm.create_model("hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True) 
 
 # Inference is ran for every server call
@@ -28,6 +29,7 @@ def init():
 def inference(model_inputs:dict) -> dict:
     global model
     global img_transform
+    global device
 
     # Parse out your arguments
     imagedata = model_inputs.get('imagedata', None)
@@ -37,7 +39,7 @@ def inference(model_inputs:dict) -> dict:
     # Assuming imagedata is the string value with 'data:image/jpeg;base64,' we remove the first 23 char
     image = Image.open(BytesIO(base64.decodebytes(bytes(imagedata[23:], "utf-8"))))
     image = img_transform(image)
-    ps = model(image.to("cpu").unsqueeze(0))
+    ps = model(image.to(device).unsqueeze(0))
     ps = F.softmax(ps,dim = 1)
     result = ps.cpu().data.numpy()[0]
     
