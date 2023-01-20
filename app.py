@@ -21,7 +21,9 @@ def init():
                              T.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225]) # Normalize by 3 means 3 StD's of the image net, 3 channels
     ])
     
-    device = "gpu" if torch.cuda.is_available() else "cpu"
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("On which device we are on:{}".format(device))
+
     model = timm.create_model("hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True) 
 
 # Inference is ran for every server call
