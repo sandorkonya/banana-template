@@ -7,7 +7,7 @@ import timm
 
 def download_model():
     # do a dry run of loading the huggingface model, which will download weights
-    model = timm.create_model("hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True)
+    model = timm.create_model("resnet18", pretrained=True)
 
 if __name__ == "__main__":
     download_model()
